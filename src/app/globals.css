@@ -3,6 +3,16 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /*
+   * 視聴ページの字幕フォントサイズ（`SubtitleOverlayPanel` / `TranscriptScriptPane` が参照）
+   * 変更例: --watch-subtitle-overlay-english-font-size: 1.5rem;
+   */
+  --watch-subtitle-overlay-english-font-size: 2rem;
+  --watch-subtitle-overlay-japanese-font-size: 1.8rem;
+  --watch-subtitle-script-english-font-size: 1.5rem;
+  --watch-subtitle-script-japanese-font-size: 0.875rem;
+  --watch-subtitle-script-timestamp-font-size: 0.6875rem;
 }
 
 @theme inline {
