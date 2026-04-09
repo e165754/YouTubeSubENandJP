@@ -43,6 +43,12 @@ export type WordAnalysisResult = {
   readonly relatedPhrasesEnglish: readonly string[];
 };
 
+/** 字幕補完APIの戻り値 */
+export type SubtitleCompletionResult = {
+  readonly naturalPrimaryLine: string;
+  readonly literalSecondaryLine: string;
+};
+
 /*
  * ファイル概要: ドメイン型の単一ソース
  * 入出力の概要: 型のみ（実行時の入出力なし）
