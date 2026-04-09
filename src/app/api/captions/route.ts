@@ -16,7 +16,6 @@ import {
 } from "@/lib/captions/fetchYouTubeCaptionXmlViaWatchPagePlayerResponse";
 import { parseYouTubeTimedTextXmlString } from "@/lib/captions/parseYouTubeTimedTextXmlString";
 import { buildBilingualTranscriptCueListFromSeparateTracks } from "@/lib/captions/buildBilingualTranscriptCueList";
-import { fillMissingJapaneseInBilingualTranscriptCueListWithMachineTranslation } from "@/lib/translation/fillMissingJapaneseInBilingualTranscriptCueListWithMachineTranslation";
 import { logServerYouTubeCaptionPipelineDebug } from "@/lib/debug/logYouTubeCaptionPipelineDebugIfEnabled";
 
 /** ローカル NLLB 推論で長時間かかるため上限を広げる（ホスティングが対応している場合のみ有効） */
@@ -261,13 +260,15 @@ export async function GET(request: Request): Promise<NextResponse> {
     );
   }
 
-  const machineTranslationFillOutcome = shouldRunMachineTranslationFillForMissingJapanese
-    ? await fillMissingJapaneseInBilingualTranscriptCueListWithMachineTranslation(bilingualCueList)
-    : {
-        bilingualCueList,
-        appliedMachineTranslation: false,
-        machineTranslationProviderUsed: null as null | "local_nllb",
-      };
+  /**
+   * Cloudflare Workers では onnxruntime-node（.node バイナリ）をバンドルできないため、
+   * ローカル NLLB による補完は無効化し、YouTube 由来の字幕のみを返す。
+   */
+  const machineTranslationFillOutcome = {
+    bilingualCueList,
+    appliedMachineTranslation: false,
+    machineTranslationProviderUsed: null as null | "local_nllb",
+  };
   bilingualCueList = machineTranslationFillOutcome.bilingualCueList;
 
   const bilingualSummaryAfterMachineTranslation =
